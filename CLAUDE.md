@@ -8,6 +8,8 @@ Three people fly: Tisha, Angru and Jordi. Kenny, Mathew, Cecilia, Dayvin and Wil
 
 `index.html` is the entire site: inline CSS, HTML, and JS in one file. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
+`og.jpg` is the only other file: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams). The `og:image` tag in the head points at it by absolute URL (`https://jordialbanell.github.io/bkk-retreat/og.jpg`), which is required, relative paths do not resolve for link previews. Keep `og:title` and `og:description` in sync with `<title>` and `<meta name="description">`. If the hero image or the site URL ever changes, regenerate `og.jpg` and update the absolute URL.
+
 ## Pricing lives in two places, keep them in sync
 
 1. The `FLIGHTS` and `ROOMS` objects in the script block drive the interactive configurator.
