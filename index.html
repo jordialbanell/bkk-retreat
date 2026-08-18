@@ -174,11 +174,28 @@
 
   @media (max-width:820px){
     .controls{grid-template-columns:1fr 1fr}
-    .readout{grid-template-columns:1fr}
-    .grid2{grid-template-columns:1fr}
+    .readout{grid-template-columns:1fr;gap:28px}
+    .grid2{grid-template-columns:1fr;gap:40px}
     .scenario-cards{grid-template-columns:1fr}
-    .foot .wrap{grid-template-columns:1fr}
-    .hero{min-height:76vh}
+    .foot .wrap{grid-template-columns:1fr;gap:32px}
+    .hero{min-height:62vh}
+    section{padding:56px 0}
+    section.tight{padding:44px 0}
+    .hero-meta{gap:18px 24px;margin-top:26px}
+    .hero-meta .v{font-size:16px}
+    .hero-bottom{padding-bottom:36px}
+  }
+  @media (max-width:480px){
+    .controls{grid-template-columns:1fr;gap:18px}
+    .seg{flex-direction:row}
+    .seg button{flex:1;padding:12px 12px}
+    .seg button .sub{display:none}
+    table{font-size:13.5px}
+    caption{font-size:17px}
+    .scard{padding:26px 20px}
+    .scard .range{font-size:28px}
+    .lede{font-size:16px}
+    .hero-top{padding:20px 16px;font-size:12.5px}
   }
   @media (prefers-reduced-motion:no-preference){
     .fade{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -195,7 +212,7 @@
     <span>Internal proposal</span>
   </div>
   <div class="hero-bottom wrap" style="max-width:1100px;margin:0 auto;width:100%;">
-    <p class="eyebrow">Team retreat proposal · <b>For Kenny &amp; Angru</b></p>
+    <p class="eyebrow">Team offsite · <b>Costing</b></p>
     <h1>Bangkok,<br><span class="thin">all of us.</span></h1>
     <div class="hero-meta">
       <div><span class="k">When</span><br><span class="v">25–27 Sep 2026</span></div>
@@ -206,22 +223,21 @@
   </div>
 </header>
 
-<!-- THE CASE -->
+<!-- THE PLAN -->
 <section class="tight">
   <div class="wrap fade">
-    <p class="kicker">The case</p>
-    <h2>Half the team is already there. The retreat costs a flight and a room.</h2>
-    <p class="lede">Mathew, Cecilia, Dayvin and Wilson will be in Bangkok for the LIXIL event, with travel covered by the project budget. Kenny will be there too. Flying the remaining four down turns a project trip into a full team weekend at a fraction of what a standalone retreat would cost.</p>
-    <p class="lede">Everyone stays at the Ibis Sukhumvit 24, same hotel as the LIXIL team, 100m from Phrom Phong BTS. One base, zero logistics.</p>
+    <p class="kicker">Hei offsite 01</p>
+    <h2>Hei's first official team offsite.</h2>
+    <p class="lede">Costing for flights and rooms for Ken, Tisha, Angru and Jordi. Two travel options depending on Friday event support. Meals and activities priced separately once the core is confirmed.</p>
   </div>
 </section>
 
 <!-- CONFIGURATOR -->
 <section class="config">
   <div class="wrap fade">
-    <p class="kicker">Build the budget</p>
-    <h2>Pick the options. The number updates.</h2>
-    <p class="lede">Flights and rooms only. Meals and activities come as a separate add-on menu once the core is approved.</p>
+    <p class="kicker">Costing</p>
+    <h2>Flights and rooms.</h2>
+    <p class="lede">Per person and total for four. All prices include taxes.</p>
 
     <div class="controls">
       <div class="control">
@@ -272,20 +288,20 @@
 <!-- SCENARIOS -->
 <section class="compare">
   <div class="wrap fade">
-    <p class="kicker">Two ways to run it</p>
-    <h2>Fly Friday, or fly Thursday and work the event.</h2>
+    <p class="kicker">Travel options</p>
+    <h2>Fly Friday, or Thursday to help on the LIXIL event.</h2>
     <div class="scenario-cards">
       <div class="scard">
-        <h3>Option A · Retreat only</h3>
+        <h3>Option A · Offsite only</h3>
         <p class="dates">Fri 25 – Sun 27 Sep · 2 nights</p>
-        <p>Land Friday evening in time for a team dinner. Saturday and Sunday are the retreat. Half a day out of office.</p>
+        <p>Land Friday evening in time for team dinner. Half a day out of office.</p>
         <p class="range">S$1,936–2,516<small>total for four, depending on airline and room options</small></p>
       </div>
       <div class="scard alt">
-        <h3>Option B · Event support + retreat</h3>
+        <h3>Option B · Event support + offsite</h3>
         <p class="dates">Thu 24 – Sun 27 Sep · 3 nights</p>
-        <p>Fly Thursday, get briefed, and help the LIXIL team on Friday. Wilson expects he will need the hands. The retreat starts Friday night as planned.</p>
-        <p class="range">S$2,392–3,076<small>total for four. Roughly S$550 more than Option A on like-for-like options, for a full extra day of event support</small></p>
+        <p>Fly Thursday for the briefing, help the LIXIL team on Friday. Offsite starts Friday night as planned.</p>
+        <p class="range">S$2,392–3,076<small>total for four. Roughly S$550 more than Option A like-for-like</small></p>
       </div>
     </div>
   </div>
@@ -360,16 +376,15 @@
 <section class="foot tight">
   <div class="wrap fade">
     <div>
-      <h4>How to read this</h4>
-      <p>All prices in SGD, taxes and charges included, captured 18 Aug 2026 from Google Flights and Booking.com. Fares move; rooms less so. September is one of the cheapest months in Bangkok. Add-ons (dinners, cooking class, rooftop) come as a separate menu and scale to all nine if the LIXIL team joins the activities, which is the point.</p>
+      <h4>Notes</h4>
+      <p>All prices in SGD, taxes included, captured 18 Aug 2026 from Google Flights and Booking.com. Add-ons (dinners, cooking class, rooftop) priced separately, scaling to all nine when the LIXIL team joins the activities.</p>
     </div>
     <div>
-      <h4>Suggested sequence</h4>
+      <h4>Next steps</h4>
       <ul>
-        <li>1 · Hold 4 flexible rooms today. Zero cost, cancellable until the day before.</li>
-        <li>2 · Kenny picks Option A or B and the airline.</li>
-        <li>3 · Book flights on approval. Scoot fares are non-refundable once ticketed.</li>
-        <li>4 · Approve the add-on menu separately.</li>
+        <li>1 · Hold 4 flexible rooms now. Zero cost, free cancellation until the day before.</li>
+        <li>2 · Confirm Option A or B and the airline.</li>
+        <li>3 · Book flights. Fares are non-refundable once ticketed.</li>
       </ul>
     </div>
   </div>
