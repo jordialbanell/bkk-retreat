@@ -57,7 +57,15 @@ Option 2 is the exception to one card, one price: it holds two cooking schools a
 
 ## index.html: Saturday dinner
 
-Saturday dinner is Pastel, a Mediterranean rooftop that turns into a DJ party later. It sits in a `.plan` entry below the options, in the `.evening` block, with the time shown as "From evening / time TBC" and the cost line "Budget TBC." Replace both when the booking and budget are settled.
+Saturday dinner is Pastel, a Mediterranean rooftop that turns into a DJ party later. It sits in a `.plan` entry below the options, in the `.evening` block. Budget is confirmed at S$60 pp capped, about S$480 for 8, which assumes the planned shared order and one signature cocktail each ordered centrally, with 10% service and 7% VAT included. The time is still "From evening / time TBC", so replace that when the booking is made.
+
+The planned order is a list inside a `<details class="order">`, collapsed by default so the entry stays short on a phone. If a dish moves, the S$58 pp working figure in the detail line moves with it, and the S$60 cap has to be rechecked.
+
+## index.html: the disclosure pattern
+
+`<details class="order">` is the only `<details>` in the project. The default triangle is removed twice over, `list-style:none` on the summary for modern browsers and `::-webkit-details-marker{display:none}` for Safari, and replaced with a typographic `+` that becomes `-` when open, so the control stays inside the palette instead of adding a marker glyph. The summary carries `padding:8px 0` purely to give a 35px tap target on a phone. Reuse this pattern rather than inventing a second disclosure style.
+
+Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedule row rules are scoped `.plan > li` for exactly this reason. An unscoped `.plan li` also matches list items nested inside an entry and forces them into the 130px time column.
 
 ## Writing style
 

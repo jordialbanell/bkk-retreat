@@ -118,7 +118,7 @@
 
   /* ---------- schedule list ---------- */
   .plan{list-style:none;border-top:1.5px solid var(--black);margin-top:34px}
-  .plan li{
+  .plan > li{
     display:grid;grid-template-columns:130px 1fr;gap:24px;
     padding:28px 0;border-bottom:1px solid var(--line);
   }
@@ -132,6 +132,23 @@
   }
   .plan .detail{font-size:14px;color:var(--grey);max-width:56ch;margin-top:8px}
   .plan .link{margin-top:16px}
+  /* the only <details> in the project. Default marker is dropped (list-style plus the
+     webkit pseudo-element) and replaced with a typographic +/- so it stays in the palette. */
+  .order{margin-top:16px;padding-top:6px;border-top:1px solid var(--line);max-width:56ch}
+  .order summary{
+    display:flex;align-items:center;gap:8px;list-style:none;cursor:pointer;
+    padding:8px 0;
+    font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--blue);
+  }
+  .order summary::-webkit-details-marker{display:none}
+  .order summary::after{content:"+";font-size:15px;line-height:1}
+  .order[open] summary::after{content:"-"}
+  .order summary:hover{color:var(--black)}
+  .order summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .order ul{list-style:none;margin-top:12px}
+  .order li{font-size:14px;color:#3a3a3a;padding:6px 0;border-bottom:1px solid var(--line)}
+  .order li:last-child{border-bottom:none}
 
   /* ---------- activity options ---------- */
   .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(305px,100%),1fr));gap:14px;margin-top:40px}
@@ -179,7 +196,7 @@
   }
   @media (max-width:480px){
     .nav .wrap{height:46px;gap:20px;font-size:12px}
-    .plan li{grid-template-columns:1fr;gap:8px;padding:24px 0}
+    .plan > li{grid-template-columns:1fr;gap:8px;padding:24px 0}
     .plan .when{font-size:17px}
     .plan h3{font-size:20px}
     .opt{padding:22px 20px}
@@ -342,7 +359,24 @@
           <div>
             <h3>Dinner · Pastel</h3>
             <p class="desc">Mediterranean rooftop sharing plates, crudo, seafood, grilled dishes, cocktails. Starts as dinner, shifts into party mode with a DJ.</p>
-            <p class="price">Budget TBC.</p>
+            <p class="price">S$60 pp capped · about S$480 for 8</p>
+            <p class="detail">Cap holds at about S$58 pp with a planned shared order and one signature cocktail each, ordered centrally for the table, 10% service and 7% VAT included. Skip the tomahawk, caviar, lobster pasta, premium steaks, lamb chops and Pastel Bites. A second drink round adds about S$19 pp.</p>
+            <details class="order">
+              <summary>The order for 8</summary>
+              <ul>
+                <li>Mezze platter</li>
+                <li>Burrata</li>
+                <li>Truffle roast chicken with potatoes and salad</li>
+                <li>Wagyu beef tartare</li>
+                <li>Seafood linguine</li>
+                <li>Pesto and stracciatella rigatoni</li>
+                <li>Truffle patatas</li>
+                <li>Truffle fries</li>
+                <li>Broccolini</li>
+                <li>One regular signature cocktail each</li>
+              </ul>
+            </details>
+            <a class="link" href="https://www.pastelbangkok.com/menus/" target="_blank" rel="noopener">Menus</a>
           </div>
         </li>
       </ul>
