@@ -2,17 +2,17 @@
 
 Two-page reference for Hei's Bangkok team offsite (Sep 2026). Hosted on GitHub Pages. Primary reader is Kenny (the boss), mostly on mobile.
 
-Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Cecilia, Dayvin and Wilson are already in Bangkok. Costing totals are per person x 3 (`pp*3` in the JS). Weekend-plan totals are per person x 8, because activities and meals are for everyone.
+Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Cecilia, Dayvin and Wilson are already in Bangkok on the LIXIL project budget. Core travel costs are per person x 3, because only three fly. Everything social, meals and activities, is per person x 8. Every total on both pages is written out by hand, there is no arithmetic in JS any more.
 
 ## Structure
 
 Two pages, each a standalone file with inline CSS, HTML and JS. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
 - `index.html` is the weekend plan: Friday (confirmed), Saturday (six activity options, then dinner), Sunday (free). It currently holds options 1-6 awaiting Kenny's pick. Once he picks, replace the six option cards with the final schedule, in the same `.plan` list style Friday and Saturday dinner use.
-- `costing.html` is the frozen costing reference: flights, rooms, the interactive configurator and the scenario cards. It was the original single-page site. Nothing on it is expected to change unless prices move.
+- `costing.html` is the cost record: what was actually booked for the three who fly, plus per-person estimates for the weekend social spend. It is static, there is no configurator and no JS beyond the shared scroll reveal.
 - `og.jpg` is shared by both: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams).
 
-Both pages use the same hero image, palette, type and section rhythm. All style rules below apply to both.
+Both pages use the same hero image, palette, type and section rhythm, and both carry "Internal" at the top right of the hero. All style rules below apply to both.
 
 ## Nav lives in both files, keep it in sync
 
@@ -23,31 +23,20 @@ Each page carries its own copy of the same nav: a `.nav` block above the hero wi
 Each page has its own `<title>`, description and og tags. Keep `og:title` and `og:description` in sync with `<title>` and `<meta name="description">` on each page.
 
 - `index.html`: "Heitreat 01 · The weekend", `og:url` the site root.
-- `costing.html`: "Heitreat 01 · Costing", `og:url` ending in `/costing.html`.
+- `costing.html`: "Heitreat 01 · Costing", `og:url` ending in `/costing.html`. Its description covers booked flights and rooms plus weekend spend estimates.
 
 `og:image` is an absolute URL (`https://jordialbanell.github.io/bkk-retreat/og.jpg`) on both, which is required, relative paths do not resolve for link previews. If the hero image or the site URL ever changes, regenerate `og.jpg` and update the absolute URL in both files.
 
-## costing.html: pricing lives in two places, keep them in sync
+## costing.html: a record, not a calculator
 
-1. The `FLIGHTS` and `ROOMS` objects in the script block drive the interactive configurator.
-2. The static flight, hotel and add-on tables in the HTML.
+The page used to be a decision tool with an interactive configurator, a `FLIGHTS`/`ROOMS` data model, flight and hotel option tables and Option A/B scenario cards. Bookings are made, so all of that is gone. There are no ranges to recompute and no duplicated price source to keep in sync. What is left is two static tables:
 
-Any price change must update both. They are separate sources of the same numbers.
+- **Core cost**, booked and confirmed: Scoot return S$316 pp, Ibis Sukhumvit 24 S$303 per room for 3 nights Thu-Sun on flexible terms, core total S$619 pp and S$1,857 for three. The three columns are item, per person, for three. The per-person and for-three figures are written out, so if one moves, update the row and the `tr.total` line together.
+- **Weekend spend**, estimates for all eight: Friday dinner, Friday drinks, Saturday activity, Saturday dinner, Sunday. The total row is the sum of the lows and the sum of the highs, currently S$139-214 pp. Recompute it whenever a row changes, and remember the Saturday activity range (S$21-77) is the cheapest and priciest option on the Weekend page, so it moves when those options move.
 
-`FLIGHTS` is keyed by Sunday return time (`scoot_eve`, `scoot_late`, `sq`), not by number of nights: Friday and Thursday departures price the same, so the return flight is the only thing that moves the fare. `ROOMS` is still keyed by nights (2 or 3), then breakfast, then booking terms. The add-ons table is static, it is not wired to the configurator.
+Flights are per person, the hotel is per room but there is one room each, so both sit in the per-person column. The row says "one room each" so the column heading stays honest.
 
-## costing.html: scenario cards are hardcoded, recalculate them
-
-The Option A / Option B cards show hardcoded ranges: S$1,515-1,968 and S$1,794-2,319. If prices change, recompute:
-
-```
-range low  = (cheapest flight + cheapest room) x 3
-range high = (priciest flight + priciest room) x 3
-```
-
-per scenario (Option A = 2 nights, Option B = 3 nights). Since flights no longer vary by nights, the cheapest and priciest flight are the same in both scenarios, only the room rates differ. Current check: A low = (310 + 195) x 3 = 1,515. B high = (413 + 360) x 3 = 2,319.
-
-The Option B card also states the like-for-like gap to Option A (currently about S$350, the 3-night minus 2-night room difference x 3). Recheck it when room rates move.
+`tr.total` is the heavier summary row, and `td.num`/`th.num` carry `padding-left` so two numeric columns cannot collide on a phone. The `.note-sm` paragraph under each table carries the caveats, and `.note-sm a` is the only inline prose link style on either page.
 
 ## index.html: activity totals are hardcoded
 
@@ -86,7 +75,7 @@ Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedu
 
 Must stay usable at 480px and below. Test any layout change against the mobile breakpoints at the bottom of each file's CSS: `@media (max-width:820px)` and `@media (max-width:480px)`.
 
-- costing.html: the 480px query flips `.seg` to a row, so configurator controls with more than two options need an explicit override (the flights control has one).
+- costing.html: the 480px query only drops the table and caption font sizes. The tables are plain and reflow on their own, but `td.num` needs its `padding-left` or two numeric columns run into each other on the total row at phone width.
 - index.html: there is one `min-width` query, `@media (min-width:672px)`, which is the width at which the `.options` grid reaches 2 columns. From there option 2 (`.opt.wide`) spans a full grid row and sets its two schools side by side, so the double-height card stays close to its neighbours. Below it, the card is a normal single column with the two schools stacked. If the `305px` grid floor below ever changes, recompute this `672px` (`2 x floor + 14px gap + 48px padding`) to match.
 - index.html: the `.options` grid is otherwise not breakpoint-driven. It uses `repeat(auto-fit,minmax(min(305px,100%),1fr))`, which yields 3 columns on desktop, 2 in the tablet band and 1 on phones. The 305px floor exists because the longest link label (`sompongthaicookingschool.com`) renders 257px wide and does not scale with the viewport. If you add a longer label, either shorten it or raise that floor. `.link` carries `max-width:100%` so a long label wraps inside its card instead of overflowing it, which `overflow-wrap` alone cannot do on an inline-block.
 
