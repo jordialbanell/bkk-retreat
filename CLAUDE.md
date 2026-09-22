@@ -8,7 +8,7 @@ Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Ceci
 
 Two pages, each a standalone file with inline CSS, HTML and JS. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
-- `index.html` is the weekend plan: Friday (confirmed), Saturday (six activity options), Sunday (free). It currently holds options 1-6 awaiting Kenny's pick. Once he picks, replace the six option cards with the final schedule, in the same `.plan` list style Friday uses.
+- `index.html` is the weekend plan: Friday (confirmed), Saturday (six activity options, then dinner), Sunday (free). It currently holds options 1-6 awaiting Kenny's pick. Once he picks, replace the six option cards with the final schedule, in the same `.plan` list style Friday and Saturday dinner use.
 - `costing.html` is the frozen costing reference: flights, rooms, the interactive configurator and the scenario cards. It was the original single-page site. Nothing on it is expected to change unless prices move.
 - `og.jpg` is shared by both: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams).
 
@@ -51,7 +51,13 @@ The Option B card also states the like-for-like gap to Option A (currently about
 
 ## index.html: activity totals are hardcoded
 
-Each option card states a price per person and a total for eight. The totals are written out, not computed. If a per-person price changes, recompute `pp x 8` by hand and update both numbers on the card. The rainy-season note under the cards names which options are outdoors, so it has to be rechecked if the options change.
+Each option card states a price per person and a total for eight. The totals are written out, not computed. If a per-person price changes, recompute `pp x 8` by hand and update both numbers on the card. The rainy-season note under the cards names option numbers, not venues, so it has to be rechecked whenever an option changes indoor/outdoor.
+
+Option 2 is the exception to one card, one price: it holds two cooking schools as `.variant` blocks inside a single card, Bangkok Thai Cooking Academy (S$50 pp, S$400 for 8) and Pink Chili (S$46 pp, S$368 for 8), each with its own timing, tag, link and hardcoded `pp x 8` total. It stays numbered 2 so Kenny can still answer with a number. The THB figures are the quoted source prices; the SGD ones are converted, so move both together. If one school confirms, collapse the card back to a single option in the shape of cards 1 and 3-6.
+
+## index.html: Saturday dinner
+
+Saturday dinner is Pastel, a Mediterranean rooftop that turns into a DJ party later. It sits in a `.plan` entry below the options, in the `.evening` block, with the time shown as "From evening / time TBC" and the cost line "Budget TBC." Replace both when the booking and budget are settled.
 
 ## Writing style
 
@@ -73,7 +79,8 @@ Each option card states a price per person and a total for eight. The totals are
 Must stay usable at 480px and below. Test any layout change against the mobile breakpoints at the bottom of each file's CSS: `@media (max-width:820px)` and `@media (max-width:480px)`.
 
 - costing.html: the 480px query flips `.seg` to a row, so configurator controls with more than two options need an explicit override (the flights control has one).
-- index.html: the `.options` grid is deliberately not breakpoint-driven. It uses `repeat(auto-fit,minmax(min(305px,100%),1fr))`, which yields 3 columns on desktop, 2 in the tablet band and 1 on phones. The 305px floor exists because the longest link label (`sompongthaicookingschool.com`) renders 257px wide and does not scale with the viewport. If you add a longer label, either shorten it or raise that floor. `.link` carries `max-width:100%` so a long label wraps inside its card instead of overflowing it, which `overflow-wrap` alone cannot do on an inline-block.
+- index.html: there is one `min-width` query, `@media (min-width:672px)`, which is the width at which the `.options` grid reaches 2 columns. From there option 2 (`.opt.wide`) spans a full grid row and sets its two schools side by side, so the double-height card stays close to its neighbours. Below it, the card is a normal single column with the two schools stacked. If the `305px` grid floor below ever changes, recompute this `672px` (`2 x floor + 14px gap + 48px padding`) to match.
+- index.html: the `.options` grid is otherwise not breakpoint-driven. It uses `repeat(auto-fit,minmax(min(305px,100%),1fr))`, which yields 3 columns on desktop, 2 in the tablet band and 1 on phones. The 305px floor exists because the longest link label (`sompongthaicookingschool.com`) renders 257px wide and does not scale with the viewport. If you add a longer label, either shorten it or raise that floor. `.link` carries `max-width:100%` so a long label wraps inside its card instead of overflowing it, which `overflow-wrap` alone cannot do on an inline-block.
 
 ## Deploy
 
