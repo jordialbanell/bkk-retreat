@@ -8,7 +8,7 @@ Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Ceci
 
 Two pages, each a standalone file with inline CSS, HTML and JS. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
-- `index.html` is the final shared itinerary for all eight: ask bar, timed Friday and Saturday schedules, Sunday chill day, and what to wear. No options or decisions left on it, and no prices.
+- `index.html` is the final shared itinerary for all eight: timed Friday and Saturday schedules, Sunday chill day, and what to wear, plus an ask bar docked to the bottom of the viewport. No options or decisions left on it, and no prices.
 - `costing.html` is the cost record: what was actually booked for the three who fly, plus per-person estimates for the weekend social spend. It is unlisted: nothing links to it, and it is reached at `/costing` (GitHub Pages serves `costing.html` there) by anyone given the link. A grey `.unlisted` line at the top of its first section says so. It is static, there is no configurator and no JS beyond the shared scroll reveal.
 - `og.jpg` is shared by both: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams).
 
@@ -20,7 +20,7 @@ There is no nav between the pages. The old Weekend/Costing nav was removed from 
 
 ## index.html: jump nav
 
-`index.html` alone has a slim sticky `.jump` bar at the very top, above the hero: "Fri · Sat · Sun · Dress · Ask", anchor links to `#fri`, `#sat`, `#sun`, `#dress` and `#ask`. Kicker type (display font, uppercase, tracked), blue links, white background, hairline bottom border, `position:sticky;top:0;z-index:20`. No active state.
+`index.html` alone has a slim sticky `.jump` bar at the very top, above the hero: "Fri · Sat · Sun · Dress · Ask", anchor links to `#fri`, `#sat`, `#sun` and `#dress`. "Ask" is not a section jump: it carries `data-ask`, and a click handler focuses the docked input and opens its panel (its `href="#ask-input"` is only the no-JS fallback). Kicker type (display font, uppercase, tracked), blue links, white background, hairline bottom border, `position:sticky;top:0;z-index:20`. No active state.
 
 The bar height is `--jump` (44px), border included: the inner `.wrap` is `calc(var(--jump) - 1px)` tall to leave room for the 1px hairline. Every `section[id]` carries `scroll-margin-top:var(--jump)` so anchor jumps land below the bar instead of under it. If the bar height changes, change `--jump`, not the sections. A new jump target needs an `id` on its `<section>`, which picks up the margin automatically. Smooth scrolling comes from `html{scroll-behavior:smooth}`. The bar is in normal flow above the hero, so it never overlaps it; at 320px the five labels fit on one line with the 480px query's tighter gap.
 
@@ -52,7 +52,7 @@ The itinerary carries no money at all: no S$, no THB, no caps, deposits or "pric
 
 ## index.html: the itinerary
 
-Sections in order: Ask, Friday, Saturday, Sunday, Dress. Friday and Saturday are timed schedules in `.plan`, time on the left, content on the right. The Friday section opens with a `.base` line, "Base: Ibis Bangkok Sukhumvit 24" plus its Map link, then "Travel times are estimates.", once.
+Sections in order: Friday, Saturday, Sunday, Dress. The ask bar is not a section, it is the fixed dock. Friday and Saturday are timed schedules in `.plan`, time on the left, content on the right. The Friday section opens with a `.base` line, "Base: Ibis Bangkok Sukhumvit 24" plus its Map link, then "Travel times are estimates.", once.
 
 Two row types inside a schedule:
 
@@ -73,19 +73,31 @@ https://www.google.com/maps/search/?api=1&amp;query=<venue name>+Bangkok
 
 The query is the venue name plus "Bangkok", URL-encoded with `+` for spaces (e.g. `Supanniga+Eating+Room+Thonglor+Bangkok`), and the `&` is written `&amp;` in the HTML. The Ibis line drops the extra "Bangkok" because its name already has it. A new venue entry gets a Map link too.
 
-## index.html: ask bar and the QA array (keep in sync with the schedule)
+## index.html: ask dock and the QA array (keep in sync with the schedule)
 
-The `#ask` section sits directly under the hero: kicker "Ask", one 44px `input.ask-input` (16px text so iOS does not zoom on focus), five `.chip` buttons that wrap, and an `#ask-answer` block in the hairline style (1px `--line` top and bottom) that stays `hidden` until the first question. Enter submits the form; a chip fills the input and runs the same match. Everything is client-side, no external calls.
+The ask bar is a `.dock` fixed to the bottom of the viewport (`z-index:30`, above the jump nav's 20), always visible, after the stamp in the markup. Two parts:
+
+- `.dock-bar`: white, hairline top border, `--dock` (65px) tall, holding the 44px `input.ask-input` (16px text so iOS does not zoom on focus) with placeholder "Ask about the weekend".
+- `.dock-panel`: rises above the bar, `hidden` until the input is focused, tapped or typed in. It holds a sticky `.dock-head` (kicker "Ask" and a Close button), the five `.chip` buttons, and `#ask-answer` in the hairline style. It collapses on Close, Escape, or a pointerdown anywhere outside the dock. After an answer it scrolls to the bottom so the answer sits next to the input.
+
+On desktop both parts cap their contents at 620px through `.dock-inner`, left-aligned inside `.wrap`. `body` has `padding-bottom:var(--dock)` so the stamp is never hidden behind the bar. If the bar's height changes, change `--dock`.
+
+Panel height is capped at `min(420px, 100dvh - dock - 12px, --vvh - dock - 12px)`. Use `dvh`, never `vh`. On iOS the layout viewport does not shrink when the keyboard opens, so a `visualViewport` listener at the end of the script sets `--vvh` to the visible height and moves the dock up by the hidden amount with `translateY`. Android Chrome gets `interactive-widget=resizes-content` in the viewport meta, so its layout viewport and `dvh` shrink with the keyboard. Keep all three: the dvh cap, the `--vvh` listener and the meta.
 
 The data is the `QA` array in the `<script>` at the bottom of `index.html`, under the `// ----- ask bar -----` comment. Each entry is:
 
 ```
-{keywords:["saturday night","sat night","wear", ...], answer:"One to two lines, factual, page tone."}
+{keywords:["saturday night","sat night","wear", ...],
+ answer:["First line, one fact.", "Second line, the next fact."]}
 ```
 
-Matching: the question is lowercased, non-alphanumerics become spaces, and it is padded with a space each side. Every keyword found as a substring adds its length to the entry's score, so long specific keywords ("get to pastel") beat short ones ("sat "). The highest score wins, ties go to the earlier entry, and zero falls back to `FALLBACK` ("Not sure, check the schedule below or ask in the group."). Short words that would match inside other words carry a trailing or surrounding space (`"fri "`, `"sun "`, `" id "`). Dress entries come first in the array on purpose, people ask before they scroll, so they win ties.
+`answer` is an array of lines, rendered as one `<p>` per line with 6px between them. Keep each line to one fact. If an answer chains two facts, split it. A full-day plan or a drinks run is one fact and stays on one line. Lines are plain text (`textContent`), no HTML.
 
-Sync rule: the QA answers repeat times, venues and dress rules from the schedule. Any change to a time, venue, transit leg or dress line must be made in the matching answers too, or the ask bar gives the old plan. After editing, run the five chips plus a nonsense query and check each lands on the right answer.
+Matching is on whole words. `words()` lowercases the question, drops a possessive `'s` ("Saturday's" becomes "saturday", "who's going" becomes "who going"), removes other apostrophes, and splits on anything that is not a letter, digit or colon. Keywords go through the same function. A one-word keyword matches only a whole word, so "eat" no longer matches inside "weather". A multi-word keyword matches only as that exact word sequence. Each match adds the keyword's character length, the highest score wins, and ties go to the earlier entry. Dress entries come first on purpose, people ask before they scroll.
+
+Threshold: an entry only counts if it matched at least one keyword of 4+ characters, or at least two shorter ones. A lone "fri", "sat", "who" or "hot" is not enough, which is why phrases like "is it hot", "who going" and "on friday" exist as their own keywords. Below the threshold everywhere, the answer is `FALLBACK`: "I can only answer questions about the weekend. This isn't a real chat, you've been fooled. Ask in the group instead."
+
+Sync rule: the QA answers repeat times, venues and dress rules from the schedule. Any change to a time, venue, transit leg or dress line must be made in the matching answers too, or the ask bar gives the old plan. After editing, run the five chips, "weather" (weather answer), "sweater" (fallback) and a nonsense query, and check each lands on the right answer.
 
 ## index.html: Saturday dinner
 
@@ -119,7 +131,7 @@ Must stay usable at 480px and below. Test any layout change against the mobile b
 - Both pages: the 480px query gives `.hero-bottom` `padding-top:76px` so the hero text never runs up under the absolutely positioned `.hero-top` line on a short phone screen.
 - costing.html: otherwise the 480px query only drops the table and caption font sizes. The tables are plain and reflow on their own, but `td.num` needs its `padding-left` or two numeric columns run into each other on the total row at phone width.
 - index.html: at 480px `.plan > li` collapses to one column, time above content, and `li.go` rows tighten further. Long link labels wrap inside the entry because `.link` carries `max-width:100%`, which `overflow-wrap` alone cannot do on an inline-block. Keep link labels short (e.g. "Tingly cooking school" rather than the full domain).
-- index.html: the ask input stays 44px tall at every width and the chips wrap. The 480px query tightens the jump nav's gap and type so "Fri · Sat · Sun · Dress · Ask" stays on one line at 320px. Test the jump links at 320px after any change above the schedule.
+- index.html: the ask input stays 44px tall at every width and the chips wrap inside the dock panel. Test the dock at 320px with a short viewport (about 300px, what is left with a keyboard open): the panel must fit above the bar and scroll. The 480px query tightens the jump nav's gap and type so "Fri · Sat · Sun · Dress · Ask" stays on one line at 320px. Test the jump links at 320px after any change above the schedule.
 
 ## Deploy
 

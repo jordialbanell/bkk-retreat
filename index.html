@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Heitreat 01 · The weekend</title>
 <meta name="description" content="Friday rooftop, dinner and bars, Saturday cooking class, Pastel and a night out, Sunday chill day. Bangkok, 25-27 Sep.">
 <meta property="og:title" content="Heitreat 01 · The weekend">
@@ -148,8 +148,14 @@
   .order li{font-size:14px;color:#3a3a3a;padding:6px 0;border-bottom:1px solid var(--line)}
   .order li:last-child{border-bottom:none}
 
-  /* ---------- ask bar. QA data lives in the <script> at the bottom ---------- */
-  .ask-form{max-width:620px}
+  /* ---------- ask dock: fixed to the bottom, panel rises above it. QA data lives in the script at the bottom ---------- */
+  :root{--dock:65px;--vvh:100dvh}
+  body{padding-bottom:var(--dock)}
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:30}
+  .dock-inner{max-width:620px}
+  .dock-bar{height:var(--dock);background:var(--white);border-top:1px solid var(--line)}
+  .dock-bar .wrap{height:100%;display:flex;align-items:center}
+  .ask-form{width:100%}
   .ask-form label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .ask-input{
     display:block;width:100%;height:44px;padding:0 14px;
@@ -157,8 +163,25 @@
     border:1.5px solid var(--black);border-radius:0;-webkit-appearance:none;appearance:none;
   }
   .ask-input::placeholder{color:var(--grey)}
-  .ask-input:focus{outline:2px solid var(--blue);outline-offset:2px}
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;max-width:620px}
+  .ask-input:focus{outline:2px solid var(--blue);outline-offset:-3px}
+  /* capped by the visible viewport (dvh, and --vvh from visualViewport while a keyboard is open) */
+  .dock-panel{
+    background:var(--white);border-top:1px solid var(--line);overflow-y:auto;overscroll-behavior:contain;
+    max-height:420px;
+    max-height:min(420px, calc(100dvh - var(--dock) - 12px), calc(var(--vvh) - var(--dock) - 12px));
+    padding:12px 0 16px;
+  }
+  .dock-panel[hidden]{display:none}
+  /* header sticks inside the scrolling panel so Close stays reachable on a short screen */
+  .dock-head{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-12px;z-index:1;background:var(--white)}
+  .dock-head .kicker{margin-bottom:0}
+  .dock-close{
+    font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--blue);background:none;border:0;padding:0 2px;min-height:36px;cursor:pointer;
+  }
+  .dock-close:hover{color:var(--black)}
+  .dock-close:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
   .chip{
     font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.01em;
     color:var(--blue);background:var(--white);border:1px solid var(--blue);border-radius:0;
@@ -166,9 +189,11 @@
   }
   .chip:hover{color:var(--white);background:var(--blue)}
   .chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-  .answer{max-width:620px;margin-top:22px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15.5px;color:#2c2c2c}
+  .answer{margin-top:16px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15.5px;color:#2c2c2c}
   .answer[hidden]{display:none}
-  .answer .q{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-bottom:6px}
+  .answer p + p{margin-top:6px}
+  .answer .q{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+  .answer .q + p{margin-top:6px}
   .base{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;font-family:var(--display);font-weight:600;font-size:15.5px;margin-bottom:6px}
 
   /* ---------- stamp ---------- */
@@ -214,7 +239,7 @@
     <a href="#sat">Sat</a><span class="sep" aria-hidden="true">·</span>
     <a href="#sun">Sun</a><span class="sep" aria-hidden="true">·</span>
     <a href="#dress">Dress</a><span class="sep" aria-hidden="true">·</span>
-    <a href="#ask">Ask</a>
+    <a href="#ask-input" data-ask>Ask</a>
   </div>
 </nav>
 
@@ -234,25 +259,6 @@
     </div>
   </div>
 </header>
-
-<!-- ASK -->
-<section class="tight wash" id="ask">
-  <div class="wrap">
-    <p class="kicker">Ask</p>
-    <form class="ask-form" id="ask-form" role="search">
-      <label for="ask-input">Ask about the weekend</label>
-      <input class="ask-input" id="ask-input" type="search" placeholder="Ask about the weekend" autocomplete="off" enterkeyhint="search">
-    </form>
-    <div class="chips">
-      <button type="button" class="chip">Saturday's plan</button>
-      <button type="button" class="chip">Where's dinner Friday</button>
-      <button type="button" class="chip">What do I wear tonight</button>
-      <button type="button" class="chip">When's sunset</button>
-      <button type="button" class="chip">How do we get to Pastel</button>
-    </div>
-    <div class="answer" id="ask-answer" aria-live="polite" hidden></div>
-  </div>
-</section>
 
 <!-- FRIDAY -->
 <section class="tight" id="fri">
@@ -499,6 +505,34 @@
   </div>
 </section>
 
+<!-- ASK DOCK: fixed to the bottom of the viewport -->
+<div class="dock" id="dock">
+  <div class="dock-panel" id="dock-panel" hidden>
+    <div class="wrap"><div class="dock-inner">
+      <div class="dock-head">
+        <p class="kicker">Ask</p>
+        <button type="button" class="dock-close" id="dock-close">Close</button>
+      </div>
+      <div class="chips">
+        <button type="button" class="chip">Saturday's plan</button>
+        <button type="button" class="chip">Where's dinner Friday</button>
+        <button type="button" class="chip">What do I wear tonight</button>
+        <button type="button" class="chip">When's sunset</button>
+        <button type="button" class="chip">How do we get to Pastel</button>
+      </div>
+      <div class="answer" id="ask-answer" aria-live="polite" hidden></div>
+    </div></div>
+  </div>
+  <div class="dock-bar">
+    <div class="wrap"><div class="dock-inner" style="width:100%">
+      <form class="ask-form" id="ask-form" role="search">
+        <label for="ask-input">Ask about the weekend</label>
+        <input class="ask-input" id="ask-input" type="search" placeholder="Ask about the weekend" autocomplete="off" enterkeyhint="search" aria-controls="dock-panel" aria-expanded="false">
+      </form>
+    </div></div>
+  </div>
+</div>
+
 <script>
   // ----- scroll reveal -----
   const io = new IntersectionObserver(es=>{
@@ -507,86 +541,162 @@
   document.querySelectorAll(".fade").forEach(el=>io.observe(el));
 
   // ----- ask bar -----
-  // QA is the answer source for the ask bar. Keep it in sync with the schedule above:
+  // QA is the answer source for the docked ask bar. Keep it in sync with the schedule above:
   // any time, venue or dress change must be made in the matching answer too.
-  // Scoring: each keyword found in the lowercased question adds its length, so specific
-  // keywords beat short ones. Ties go to the earlier entry, which is why dress comes first.
+  // Each answer is an array of lines, rendered one <p> per line.
+  // Matching is on whole words: the question is split into words, a keyword matches only as a
+  // whole word, a multi-word keyword only as that exact word sequence. Each match adds the
+  // keyword's length, the highest score wins, ties go to the earlier entry (dress comes first).
+  // An answer needs one matched keyword of 4+ characters, or two shorter ones, else FALLBACK.
   const QA = [
     {keywords:["wear tonight","tonight","wear","dress","outfit"],
-     answer:"Friday night: smart casual, one outfit all night, Sing Sing is strict. Saturday night: smart casual, can go a notch up. No shorts or flip-flops either night."},
-    {keywords:["friday","fri ","wear","dress","outfit","clothes","smart casual","shoes"],
-     answer:"Friday: one outfit all night, smart casual. Sing Sing is strict: collared shirt or smart tee, chinos or smart trousers, proper shoes. No shorts, flip-flops or sportswear."},
+     answer:["Friday night: smart casual, one outfit all night, Sing Sing is strict.",
+             "Saturday night: smart casual, can go a notch up. No shorts or flip-flops either night."]},
+    {keywords:["friday","fri","wear","dress","outfit","clothes","smart casual","shoes"],
+     answer:["Friday: one outfit all night, smart casual.",
+             "Sing Sing is strict: collared shirt or smart tee, chinos or smart trousers, proper shoes.",
+             "No shorts, flip-flops or sportswear."]},
     {keywords:["saturday day","daytime","afternoon","cooking","class","wear","dress","outfit","clothes","shoes"],
-     answer:"Saturday daytime: comfy, light clothes you don't mind getting splashed at the cooking class. Closed shoes are safer in the kitchen."},
-    {keywords:["saturday night","sat night","saturday","sat ","wear","dress","outfit","clothes","aether","pastel","havana","baccarat"],
-     answer:"Saturday night: smart casual, can go a notch up for Aether and Pastel. Same outfit for Havana and Baccarat. No shorts or flip-flops."},
-    {keywords:["sunday","sun ","wear","dress","outfit","clothes","temple","temples","shoulders","knees","cover","grand palace","wat pho"],
-     answer:"Sunday: casual. For the Grand Palace and Wat Pho, covered shoulders and knees are required."},
-    {keywords:["passport"," id ","id check","identification","bring"],
-     answer:"Bring your passport on Friday, Tichuca checks ID at the door."},
-    {keywords:["friday","fri ","on friday","what s on","plan","schedule","itinerary","programme","program","happening"],
-     answer:"Friday: leave the hotel 5:00pm, Tichuca rooftop 5:15, dinner at Supanniga 7:30, Rabbit Hole 9:30, Sing Sing from 11:45 until late."},
-    {keywords:["saturday","sat ","on saturday","what s on","plan","schedule","itinerary","programme","program","happening"],
-     answer:"Saturday: leave 12:15pm, Tingly cooking class 1-4pm, back to shower and change, Aether 5:45, dinner at Pastel 7:45, Havana Social 10:05, then Baccarat."},
-    {keywords:["sunday","sun ","on sunday","what s on","plan","schedule","itinerary","programme","program","happening","free","chill"],
-     answer:"Sunday is a chill day with no group plan. Shopping, a massage at Makkha Spa or the temples, your call."},
-    {keywords:["dinner","friday","fri ","supanniga","eat","food","restaurant"],
-     answer:"Friday dinner is Supanniga Eating Room, Thonglor, 7:30-9:15pm. Regional Thai, shared plates."},
-    {keywords:["dinner","saturday","sat ","pastel","eat","food","restaurant","order"],
-     answer:"Saturday dinner is Pastel, 7:45-10:00pm. Mediterranean rooftop, one shared order for the table, DJ later."},
-    {keywords:["drinks","drink","bar","bars","friday","fri ","tichuca","rabbit hole","sing sing","club","party","late"],
-     answer:"Friday: Tichuca rooftop 5:15-7:10pm, Rabbit Hole 9:30-11:30pm, Sing Sing Theater from 11:45pm until late."},
-    {keywords:["drinks","drink","bar","bars","saturday","sat ","aether","havana","baccarat","after pastel","after dinner","club","party","late"],
-     answer:"Saturday: Aether rooftop 5:45-7:10pm, Havana Social after Pastel from 10:05pm, then Baccarat late."},
+     answer:["Saturday daytime: comfy, light clothes you don't mind getting splashed at the cooking class.",
+             "Closed shoes are safer in the kitchen."]},
+    {keywords:["saturday night","sat night","saturday","sat","wear","dress","outfit","clothes","aether","pastel","havana","baccarat"],
+     answer:["Saturday night: smart casual, can go a notch up for Aether and Pastel.",
+             "Same outfit for Havana and Baccarat. No shorts or flip-flops."]},
+    {keywords:["sunday","sun","wear","dress","outfit","clothes","temple","temples","shoulders","knees","cover","grand palace","wat pho"],
+     answer:["Sunday: casual.",
+             "For the Grand Palace and Wat Pho, covered shoulders and knees are required."]},
+    {keywords:["passport","id","id check","identification","bring"],
+     answer:["Bring your passport on Friday, Tichuca checks ID at the door."]},
+    {keywords:["friday","fri","on friday","plan","schedule","itinerary","programme","program","happening"],
+     answer:["Friday: leave the hotel 5:00pm, Tichuca rooftop 5:15, dinner at Supanniga 7:30, Rabbit Hole 9:30, Sing Sing from 11:45 until late."]},
+    {keywords:["saturday","sat","on saturday","plan","schedule","itinerary","programme","program","happening"],
+     answer:["Saturday: leave 12:15pm, Tingly cooking class 1-4pm, back to shower and change, Aether 5:45, dinner at Pastel 7:45, Havana Social 10:05, then Baccarat."]},
+    {keywords:["sunday","sun","on sunday","plan","schedule","itinerary","programme","program","happening","free","chill"],
+     answer:["Sunday is a chill day with no group plan.",
+             "Shopping, a massage at Makkha Spa or the temples, your call."]},
+    {keywords:["dinner","friday","fri","supanniga","eat","food","restaurant"],
+     answer:["Friday dinner is Supanniga Eating Room, Thonglor, 7:30-9:15pm.",
+             "Regional Thai, shared plates."]},
+    {keywords:["dinner","saturday","sat","pastel","eat","food","restaurant","order"],
+     answer:["Saturday dinner is Pastel, 7:45-10:00pm.",
+             "Mediterranean rooftop, one shared order for the table, DJ later."]},
+    {keywords:["drinks","drink","bar","bars","friday","fri","tichuca","rabbit hole","sing sing","club","party","late"],
+     answer:["Friday: Tichuca rooftop 5:15-7:10pm, Rabbit Hole 9:30-11:30pm, Sing Sing Theater from 11:45pm until late."]},
+    {keywords:["drinks","drink","bar","bars","saturday","sat","aether","havana","baccarat","after pastel","after dinner","club","party","late"],
+     answer:["Saturday: Aether rooftop 5:45-7:10pm, Havana Social after Pastel from 10:05pm, then Baccarat late."]},
     {keywords:["cooking","class","tingly","cook","when","start","time"],
-     answer:"Tingly Thai cooking class, Saturday 1:00-4:00pm. Leave the hotel at 12:15pm, about 35 min by Grab."},
+     answer:["Tingly Thai cooking class, Saturday 1:00-4:00pm.",
+             "Leave the hotel at 12:15pm, about 35 min by Grab."]},
     {keywords:["sunset","sun set","golden hour","sundown"],
-     answer:"Sunset is 6:13pm both days. Friday you'll be at Tichuca, Saturday at Aether, 44th floor."},
+     answer:["Sunset is 6:13pm both days.",
+             "Friday you'll be at Tichuca, Saturday at Aether, 44th floor."]},
+    {keywords:["weather","rain","rainy","raining","umbrella","is it hot","hot","humid","humidity","heat","temperature","monsoon","storm"],
+     answer:["Late September is rainy season, expect a shower most days, usually short.",
+             "The rooftops have covered sections.",
+             "It's hot and humid, dress light."]},
+    {keywords:["who going","who coming","who there","who is going","who is coming","who is there","who","team","everyone","attendees","how many people"],
+     answer:["All eight: Kenny, Mathew, Cecilia, Dayvin and Wilson are already in Bangkok for the LIXIL event.",
+             "Tisha, Angru and Jordi land Thursday."]},
     {keywords:["hotel","base","ibis","staying","stay","address","sukhumvit 24","where are we"],
-     answer:"Base is Ibis Bangkok Sukhumvit 24. There's a Map link at the top of the Friday schedule."},
+     answer:["Base is Ibis Bangkok Sukhumvit 24.",
+             "There's a Map link at the top of the Friday schedule."]},
     {keywords:["get to pastel","to pastel","pastel","how do we get","how to get","bts","grab","travel","transport"],
-     answer:"From Aether at 7:10pm: Grab, about 25 min, or BTS, about 20 min. Dinner starts 7:45."},
-    {keywords:["leave","leaving","meet","what time","start","friday","fri "],
-     answer:"Friday: leave the hotel at 5:00pm for Tichuca, about 15 min by Grab."},
-    {keywords:["leave","leaving","meet","what time","start","saturday","sat "],
-     answer:"Saturday: leave the hotel at 12:15pm for Tingly, about 35 min by Grab. Then again at 5:15pm for Aether."},
+     answer:["From Aether at 7:10pm: Grab, about 25 min, or BTS, about 20 min.",
+             "Dinner starts 7:45."]},
+    {keywords:["leave","leaving","meet","what time","start","friday","fri"],
+     answer:["Friday: leave the hotel at 5:00pm for Tichuca, about 15 min by Grab."]},
+    {keywords:["leave","leaving","meet","what time","start","saturday","sat"],
+     answer:["Saturday: leave the hotel at 12:15pm for Tingly, about 35 min by Grab.",
+             "Then again at 5:15pm for Aether."]},
     {keywords:["massage","spa","makkha","relax"],
-     answer:"Makkha Spa, Sukhumvit 33. Plan 2-3 hours, Sunday is the day for it."},
+     answer:["Makkha Spa, Sukhumvit 33.",
+             "Plan 2-3 hours, Sunday is the day for it."]},
     {keywords:["shopping","shop","mall","market","chatuchak","iconsiam","emsphere","emquartier","buy"],
-     answer:"Sunday options: Chatuchak Weekend Market, IconSiam, Emsphere, EmQuartier."},
+     answer:["Sunday options: Chatuchak Weekend Market, IconSiam, Emsphere, EmQuartier."]},
     {keywords:["sightseeing","sights","see","temple","temples","grand palace","wat pho","wat arun","which"],
-     answer:"Grand Palace, Wat Pho and Wat Arun, on Sunday if you want them. Covered shoulders and knees at the Grand Palace and Wat Pho."},
+     answer:["Grand Palace, Wat Pho and Wat Arun, on Sunday if you want them.",
+             "Covered shoulders and knees at the Grand Palace and Wat Pho."]},
     {keywords:["fly","flying","flight","flights","back","home","airport","monday","return","mathew","dayvin","cecilia","wilson"],
-     answer:"Mathew and Dayvin fly back Sunday 9:15pm on SQ. Cecilia and Wilson stay until Monday."}
+     answer:["Mathew and Dayvin fly back Sunday 9:15pm on SQ.",
+             "Cecilia and Wilson stay until Monday."]}
   ];
-  const FALLBACK = "Not sure, check the schedule below or ask in the group.";
+  const FALLBACK = ["I can only answer questions about the weekend. This isn't a real chat, you've been fooled. Ask in the group instead."];
 
+  // "Saturday's plan" -> ["saturday","plan"]: possessive 's dropped, other apostrophes removed
+  function words(text){
+    return text.toLowerCase().replace(/['\u2019]s\b/g,"").replace(/['\u2019]/g,"")
+      .split(/[^a-z0-9:]+/).filter(Boolean);
+  }
+  const QA_WORDS = QA.map(e=>e.keywords.map(words));
+  function hasSeq(ws, kw){
+    for(let i=0; i+kw.length<=ws.length; i++){
+      if(kw.every((k,j)=>ws[i+j]===k)) return true;
+    }
+    return false;
+  }
   function answerFor(question){
-    const q = " " + question.toLowerCase().replace(/[^a-z0-9:]+/g," ").trim() + " ";
+    const ws = words(question);
     let best = null, top = 0;
-    QA.forEach(e=>{
-      const score = e.keywords.reduce((n,k)=> q.includes(k) ? n + k.trim().length : n, 0);
-      if(score > top){ top = score; best = e; }
+    QA.forEach((e,i)=>{
+      let score = 0, long = 0, short = 0;
+      QA_WORDS[i].forEach((kw,j)=>{
+        if(!hasSeq(ws, kw)) return;
+        const len = e.keywords[j].length;
+        score += len;
+        if(len >= 4) long++; else short++;
+      });
+      if((long >= 1 || short >= 2) && score > top){ top = score; best = e; }
     });
     return best ? best.answer : FALLBACK;
   }
 
+  const dock = document.getElementById("dock");
+  const dockPanel = document.getElementById("dock-panel");
   const askForm = document.getElementById("ask-form");
   const askInput = document.getElementById("ask-input");
   const askAnswer = document.getElementById("ask-answer");
+  function openDock(){ dockPanel.hidden = false; askInput.setAttribute("aria-expanded","true"); }
+  function closeDock(){ dockPanel.hidden = true; askInput.setAttribute("aria-expanded","false"); }
   function ask(question){
     question = question.trim();
     if(!question){ askAnswer.hidden = true; return; }
-    askAnswer.innerHTML = "";
     const q = document.createElement("p"); q.className = "q"; q.textContent = question;
-    const a = document.createElement("p"); a.textContent = answerFor(question);
-    askAnswer.append(q, a);
+    askAnswer.replaceChildren(q, ...answerFor(question).map(line=>{
+      const p = document.createElement("p"); p.textContent = line; return p;
+    }));
     askAnswer.hidden = false;
+    openDock();
+    dockPanel.scrollTop = dockPanel.scrollHeight;
   }
+  askInput.addEventListener("focus", openDock);
+  askInput.addEventListener("click", openDock);
+  askInput.addEventListener("input", openDock);
   askForm.addEventListener("submit", e=>{ e.preventDefault(); ask(askInput.value); });
   document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click", ()=>{
     askInput.value = c.textContent; ask(c.textContent);
   }));
+  document.getElementById("dock-close").addEventListener("click", ()=>{ closeDock(); askInput.blur(); });
+  document.addEventListener("pointerdown", e=>{
+    if(!dock.contains(e.target) && !e.target.closest("[data-ask]")) closeDock();
+  });
+  document.addEventListener("keydown", e=>{ if(e.key === "Escape") closeDock(); });
+  // jump nav "Ask" focuses the dock instead of scrolling
+  document.querySelector("[data-ask]").addEventListener("click", e=>{
+    e.preventDefault(); askInput.focus(); openDock();
+  });
+  // keyboard open: keep the dock on top of the keyboard (iOS does not resize the layout viewport)
+  // and expose the visible height as --vvh so the panel never outgrows what is left
+  if(window.visualViewport){
+    const vv = window.visualViewport;
+    const fit = ()=>{
+      const hidden = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      dock.style.transform = hidden ? `translateY(${-hidden}px)` : "";
+      document.documentElement.style.setProperty("--vvh", vv.height + "px");
+    };
+    vv.addEventListener("resize", fit);
+    vv.addEventListener("scroll", fit);
+    fit();
+  }
 </script>
 </body>
 </html>
