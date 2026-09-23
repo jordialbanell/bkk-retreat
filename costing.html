@@ -32,18 +32,6 @@
 
   .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
 
-  /* ---------- nav (keep in sync with index.html) ---------- */
-  .nav{border-bottom:1px solid var(--line);background:var(--white)}
-  .nav .wrap{
-    display:flex;align-items:center;gap:26px;height:52px;
-    font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.12em;text-transform:uppercase;
-  }
-  .nav a{color:var(--grey);text-decoration:none;transition:color .15s}
-  .nav a:hover{color:var(--black)}
-  .nav a.on{color:var(--blue)}
-  .nav a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-
   /* ---------- hero ---------- */
   .hero{
     position:relative;
@@ -125,6 +113,7 @@
     font-family:var(--display);font-weight:700;font-size:16.5px;letter-spacing:-.01em;
   }
   tr.total td.num{white-space:nowrap}
+  .unlisted{font-size:13.5px;color:var(--grey);margin-bottom:28px}
   .note-sm{font-size:13.5px;color:var(--grey);max-width:66ch;margin-top:20px}
 
   /* ---------- footnotes ---------- */
@@ -153,11 +142,11 @@
     .hero-bottom{padding-bottom:36px}
   }
   @media (max-width:480px){
-    .nav .wrap{height:46px;gap:20px;font-size:12px}
     table{font-size:13.5px}
     caption{font-size:17px}
     .lede{font-size:16px}
     .hero-top{padding:20px 16px;font-size:12.5px}
+    .hero-bottom{padding-top:76px}
   }
   @media (prefers-reduced-motion:no-preference){
     .fade{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -166,14 +155,6 @@
 </style>
 </head>
 <body>
-
-<!-- NAV (keep in sync with index.html) -->
-<nav class="nav">
-  <div class="wrap">
-    <a href="index.html">Weekend</a>
-    <a href="costing.html" class="on" aria-current="page">Costing</a>
-  </div>
-</nav>
 
 <!-- HERO -->
 <header class="hero">
@@ -196,6 +177,7 @@
 <!-- BOOKED -->
 <section class="tight">
   <div class="wrap fade">
+    <p class="unlisted">Shared separately, not linked from the schedule.</p>
     <p class="kicker">Booked</p>
     <h2>Flights and rooms.</h2>
     <p class="lede" style="margin-bottom:36px">The core cost for the three who fly, Tisha, Angru and Jordi. Per person and total for three, taxes included.</p>

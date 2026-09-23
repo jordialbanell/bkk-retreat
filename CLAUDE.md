@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Two-page reference for Hei's Bangkok team offsite (Sep 2026). Hosted on GitHub Pages. Primary reader is Kenny (the boss), mostly on mobile.
+Two-page reference for Hei's Bangkok team offsite (Sep 2026). Hosted on GitHub Pages. `index.html` is the itinerary shared with all eight, read mostly on mobile. `costing.html` is unlisted, for Kenny and whoever else is given the link.
 
 Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Cecilia, Dayvin and Wilson are already in Bangkok on the LIXIL project budget. Core travel costs are per person x 3, because only three fly. Everything social, meals and activities, is per person x 8. Every total on both pages is written out by hand, there is no arithmetic in JS any more.
 
@@ -8,15 +8,21 @@ Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Ceci
 
 Two pages, each a standalone file with inline CSS, HTML and JS. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
-- `index.html` is the final shared itinerary for all eight: timed Friday and Saturday schedules, Sunday chill day, and what to wear. No options or decisions left on it.
-- `costing.html` is the cost record: what was actually booked for the three who fly, plus per-person estimates for the weekend social spend. It is static, there is no configurator and no JS beyond the shared scroll reveal.
+- `index.html` is the final shared itinerary for all eight: ask bar, timed Friday and Saturday schedules, Sunday chill day, and what to wear. No options or decisions left on it, and no prices.
+- `costing.html` is the cost record: what was actually booked for the three who fly, plus per-person estimates for the weekend social spend. It is unlisted: nothing links to it, and it is reached at `/costing` (GitHub Pages serves `costing.html` there) by anyone given the link. A grey `.unlisted` line at the top of its first section says so. It is static, there is no configurator and no JS beyond the shared scroll reveal.
 - `og.jpg` is shared by both: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams).
 
 Both pages use the same hero image, palette, type and section rhythm, and both carry "Internal" at the top right of the hero. All style rules below apply to both.
 
-## Nav lives in both files, keep it in sync
+## No page nav, costing stays unlinked
 
-Each page carries its own copy of the same nav: a `.nav` block above the hero with "Weekend" and "Costing". The current page gets `class="on"` (blue) and `aria-current="page"`. The `.nav` CSS block is duplicated in both files and marked with a "keep in sync" comment. Any change to the nav markup or CSS must be made in both, or the two pages drift.
+There is no nav between the pages. The old Weekend/Costing nav was removed from both files so the costing page is not reachable from the itinerary. Do not add a link to `costing.html` from `index.html`, including in the QA answers.
+
+## index.html: jump nav
+
+`index.html` alone has a slim sticky `.jump` bar at the very top, above the hero: "Fri · Sat · Sun · Dress · Ask", anchor links to `#fri`, `#sat`, `#sun`, `#dress` and `#ask`. Kicker type (display font, uppercase, tracked), blue links, white background, hairline bottom border, `position:sticky;top:0;z-index:20`. No active state.
+
+The bar height is `--jump` (44px), border included: the inner `.wrap` is `calc(var(--jump) - 1px)` tall to leave room for the 1px hairline. Every `section[id]` carries `scroll-margin-top:var(--jump)` so anchor jumps land below the bar instead of under it. If the bar height changes, change `--jump`, not the sections. A new jump target needs an `id` on its `<section>`, which picks up the margin automatically. Smooth scrolling comes from `html{scroll-behavior:smooth}`. The bar is in normal flow above the hero, so it never overlaps it; at 320px the five labels fit on one line with the 480px query's tighter gap.
 
 ## Head tags
 
@@ -29,6 +35,8 @@ Each page has its own `<title>`, description and og tags. Keep `og:title` and `o
 
 ## costing.html: a record, not a calculator
 
+All money lives here and only here.
+
 The page used to be a decision tool with an interactive configurator, a `FLIGHTS`/`ROOMS` data model, flight and hotel option tables and Option A/B scenario cards. Bookings are made, so all of that is gone. There are no ranges to recompute and no duplicated price source to keep in sync. What is left is two static tables:
 
 - **Core cost**, booked and confirmed: Scoot return S$316 pp, Ibis Sukhumvit 24 S$303 per room for 3 nights Thu-Sun on flexible terms, core total S$619 pp and S$1,857 for three. The three columns are item, per person, for three. The per-person and for-three figures are written out, so if one moves, update the row and the `tr.total` line together.
@@ -38,26 +46,50 @@ Flights are per person, the hotel is per room but there is one room each, so bot
 
 `tr.total` is the heavier summary row, and `td.num`/`th.num` carry `padding-left` so two numeric columns cannot collide on a phone. The `.note-sm` paragraph under each table carries the caveats. The total row's figure is `white-space:nowrap` so a range like S$102-115 does not break at the hyphen on a phone.
 
+## index.html: no prices
+
+The itinerary carries no money at all: no S$, no THB, no caps, deposits or "price at booking" notes, in the copy, the QA answers, `<meta name="description">` or `og:description`. Prices belong on costing.html. Check with `grep -n 'S\$\|THB' index.html`, which should return nothing.
+
 ## index.html: the itinerary
 
-Sections in order: Friday, Saturday, Sunday, Dress. Friday and Saturday are timed schedules in `.plan`, time on the left, content on the right. "Travel times are estimates." sits once under the Friday heading.
+Sections in order: Ask, Friday, Saturday, Sunday, Dress. Friday and Saturday are timed schedules in `.plan`, time on the left, content on the right. The Friday section opens with a `.base` line, "Base: Ibis Bangkok Sukhumvit 24" plus its Map link, then "Travel times are estimates.", once.
 
 Two row types inside a schedule:
 
-- Venue entries are a plain `.plan > li`: `h3` (e.g. "Drinks · Aether rooftop"), optional `.desc`, `.price`, `.detail` note, then a `.link`.
+- Venue entries are a plain `.plan > li`: `h3` (e.g. "Drinks · Aether rooftop"), optional `.desc` and `.detail` note, then a `.links` row holding the venue's own link and a Map link.
 - Transit legs and other one-line rows are `li.go` with a `p.go-text` ("Hotel to Tichuca · Grab, about 15 min"). They are compact and grey so the venues stand out. Shower and change on Saturday uses the same row.
 
-Times use the `7:30-9:15pm` form, open-ended ones `11:45pm-late`, and after-midnight rows just say "Late". If a slot moves, check the transit rows either side still add up.
+Times use the `7:30-9:15pm` form, open-ended ones `11:45pm-late`, and after-midnight rows just say "Late". If a slot moves, check the transit rows either side still add up, and update the QA answers (see below).
 
 Sunday reuses `li.go` inside `ul.plan.groups`, where the left column is a category (Shopping, Massage, Sightseeing) in blue and the text is dark, not grey. The flights-back line is the lede above it. Dress is a normal `.plan` with the day in the left column and a `.desc`, closed by a `.note` saying only Tichuca and Sing Sing have confirmed codes. If a venue changes, recheck the dress copy, it names venues.
 
-The Tingly cooking class shows "Price confirmed at booking". When the price is known, update the entry and the costing.html weekend table together.
+## index.html: Map links
+
+Every venue entry in the schedule, and the base line, has a "Map" link in the normal `.link` style, next to the venue's own link inside `<div class="links">` (flex, wraps on a phone). The URL is a Google Maps search, no place IDs:
+
+```
+https://www.google.com/maps/search/?api=1&amp;query=<venue name>+Bangkok
+```
+
+The query is the venue name plus "Bangkok", URL-encoded with `+` for spaces (e.g. `Supanniga+Eating+Room+Thonglor+Bangkok`), and the `&` is written `&amp;` in the HTML. The Ibis line drops the extra "Bangkok" because its name already has it. A new venue entry gets a Map link too.
+
+## index.html: ask bar and the QA array (keep in sync with the schedule)
+
+The `#ask` section sits directly under the hero: kicker "Ask", one 44px `input.ask-input` (16px text so iOS does not zoom on focus), five `.chip` buttons that wrap, and an `#ask-answer` block in the hairline style (1px `--line` top and bottom) that stays `hidden` until the first question. Enter submits the form; a chip fills the input and runs the same match. Everything is client-side, no external calls.
+
+The data is the `QA` array in the `<script>` at the bottom of `index.html`, under the `// ----- ask bar -----` comment. Each entry is:
+
+```
+{keywords:["saturday night","sat night","wear", ...], answer:"One to two lines, factual, page tone."}
+```
+
+Matching: the question is lowercased, non-alphanumerics become spaces, and it is padded with a space each side. Every keyword found as a substring adds its length to the entry's score, so long specific keywords ("get to pastel") beat short ones ("sat "). The highest score wins, ties go to the earlier entry, and zero falls back to `FALLBACK` ("Not sure, check the schedule below or ask in the group."). Short words that would match inside other words carry a trailing or surrounding space (`"fri "`, `"sun "`, `" id "`). Dress entries come first in the array on purpose, people ask before they scroll, so they win ties.
+
+Sync rule: the QA answers repeat times, venues and dress rules from the schedule. Any change to a time, venue, transit leg or dress line must be made in the matching answers too, or the ask bar gives the old plan. After editing, run the five chips plus a nonsense query and check each lands on the right answer.
 
 ## index.html: Saturday dinner
 
-Pastel is the 7:45-10:00pm entry in the Saturday schedule, a Mediterranean rooftop that turns into a DJ party later. Budget is confirmed at S$60 pp capped, about S$480 for 8, which assumes the planned shared order and one signature cocktail each ordered centrally, with 10% service and 7% VAT included.
-
-The planned order is a list inside a `<details class="order">` within the Pastel entry, collapsed by default so the entry stays short on a phone. If a dish moves, the S$58 pp working figure in the detail line moves with it, and the S$60 cap has to be rechecked.
+Pastel is the 7:45-10:00pm entry in the Saturday schedule, a Mediterranean rooftop that turns into a DJ party later. The planned shared order is a list inside a `<details class="order">` within the Pastel entry, collapsed by default so the entry stays short on a phone. It is the plan for the table, with no price framing. The S$60 pp cap it was built to lives only on costing.html; if a dish moves, recheck the cap there.
 
 ## index.html: the disclosure pattern
 
@@ -84,8 +116,10 @@ Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedu
 
 Must stay usable at 480px and below. Test any layout change against the mobile breakpoints at the bottom of each file's CSS: `@media (max-width:820px)` and `@media (max-width:480px)`.
 
-- costing.html: the 480px query only drops the table and caption font sizes. The tables are plain and reflow on their own, but `td.num` needs its `padding-left` or two numeric columns run into each other on the total row at phone width.
+- Both pages: the 480px query gives `.hero-bottom` `padding-top:76px` so the hero text never runs up under the absolutely positioned `.hero-top` line on a short phone screen.
+- costing.html: otherwise the 480px query only drops the table and caption font sizes. The tables are plain and reflow on their own, but `td.num` needs its `padding-left` or two numeric columns run into each other on the total row at phone width.
 - index.html: at 480px `.plan > li` collapses to one column, time above content, and `li.go` rows tighten further. Long link labels wrap inside the entry because `.link` carries `max-width:100%`, which `overflow-wrap` alone cannot do on an inline-block. Keep link labels short (e.g. "Tingly cooking school" rather than the full domain).
+- index.html: the ask input stays 44px tall at every width and the chips wrap. The 480px query tightens the jump nav's gap and type so "Fri · Sat · Sun · Dress · Ask" stays on one line at 320px. Test the jump links at 320px after any change above the schedule.
 
 ## Deploy
 

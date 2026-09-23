@@ -32,17 +32,18 @@
 
   .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
 
-  /* ---------- nav (keep in sync with costing.html) ---------- */
-  .nav{border-bottom:1px solid var(--line);background:var(--white)}
-  .nav .wrap{
-    display:flex;align-items:center;gap:26px;height:52px;
-    font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.12em;text-transform:uppercase;
+  /* ---------- jump nav: sticky, index.html only. Sections it targets carry scroll-margin-top = its height ---------- */
+  :root{--jump:44px}
+  .jump{position:sticky;top:0;z-index:20;background:var(--white);border-bottom:1px solid var(--line)}
+  .jump .wrap{
+    display:flex;align-items:center;gap:10px;height:calc(var(--jump) - 1px);
+    font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
   }
-  .nav a{color:var(--grey);text-decoration:none;transition:color .15s}
-  .nav a:hover{color:var(--black)}
-  .nav a.on{color:var(--blue)}
-  .nav a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .jump a{color:var(--blue);text-decoration:none}
+  .jump a:hover{color:var(--black)}
+  .jump a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .jump .sep{color:var(--grey)}
+  section[id]{scroll-margin-top:var(--jump)}
 
   /* ---------- hero ---------- */
   .hero{
@@ -103,11 +104,6 @@
   .lede{font-size:18px;max-width:62ch;color:#2c2c2c}
   .lede + .lede{margin-top:14px}
   .note{font-size:14px;color:var(--grey);max-width:62ch;margin-top:24px}
-  .tag{
-    display:inline-block;font-family:var(--display);font-size:10.5px;font-weight:700;
-    letter-spacing:.08em;text-transform:uppercase;color:var(--blue);
-    border:1px solid var(--blue);padding:2px 7px;
-  }
   .link{
     display:inline-block;font-family:var(--display);font-weight:600;font-size:12.5px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;
@@ -125,7 +121,6 @@
   .plan .when{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--blue)}
   .plan h3{font-family:var(--display);font-weight:700;font-size:23px;letter-spacing:-.01em;margin-bottom:8px}
   .plan .desc{font-size:14.5px;color:#3a3a3a;max-width:56ch;margin-bottom:10px}
-  .plan .price{font-family:var(--display);font-weight:600;font-size:15.5px}
   .plan .detail{font-size:14px;color:var(--grey);max-width:56ch;margin-top:8px}
   /* transit legs and other one-line rows: compact, grey, no heading */
   .plan > li.go{padding:12px 0}
@@ -133,8 +128,8 @@
   .plan .go-text{font-size:14px;color:var(--grey);max-width:56ch}
   .groups > li.go .when{color:var(--blue)}
   .groups .go-text{color:#3a3a3a}
-  h2 + .note{margin-top:0}
-  .plan .link{margin-top:16px}
+  h2 + .note,.base + .note{margin-top:0}
+  .links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:16px}
   /* the only <details> in the project. Default marker is dropped (list-style plus the
      webkit pseudo-element) and replaced with a typographic +/- so it stays in the palette. */
   .order{margin-top:16px;padding-top:6px;border-top:1px solid var(--line);max-width:56ch}
@@ -152,6 +147,29 @@
   .order ul{list-style:none;margin-top:12px}
   .order li{font-size:14px;color:#3a3a3a;padding:6px 0;border-bottom:1px solid var(--line)}
   .order li:last-child{border-bottom:none}
+
+  /* ---------- ask bar. QA data lives in the <script> at the bottom ---------- */
+  .ask-form{max-width:620px}
+  .ask-form label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .ask-input{
+    display:block;width:100%;height:44px;padding:0 14px;
+    font-family:var(--body);font-size:16px;color:var(--black);background:var(--white);
+    border:1.5px solid var(--black);border-radius:0;-webkit-appearance:none;appearance:none;
+  }
+  .ask-input::placeholder{color:var(--grey)}
+  .ask-input:focus{outline:2px solid var(--blue);outline-offset:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;max-width:620px}
+  .chip{
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.01em;
+    color:var(--blue);background:var(--white);border:1px solid var(--blue);border-radius:0;
+    padding:0 12px;min-height:36px;cursor:pointer;
+  }
+  .chip:hover{color:var(--white);background:var(--blue)}
+  .chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  .answer{max-width:620px;margin-top:22px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15.5px;color:#2c2c2c}
+  .answer[hidden]{display:none}
+  .answer .q{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-bottom:6px}
+  .base{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;font-family:var(--display);font-weight:600;font-size:15.5px;margin-bottom:6px}
 
   /* ---------- stamp ---------- */
   .stamp{
@@ -171,7 +189,6 @@
     .hero-bottom{padding-bottom:36px}
   }
   @media (max-width:480px){
-    .nav .wrap{height:46px;gap:20px;font-size:12px}
     .plan > li{grid-template-columns:1fr;gap:8px;padding:24px 0}
     .plan .when{font-size:17px}
     .plan > li.go{gap:2px;padding:10px 0}
@@ -179,6 +196,8 @@
     .plan h3{font-size:20px}
     .lede{font-size:16px}
     .hero-top{padding:20px 16px;font-size:12.5px}
+    .hero-bottom{padding-top:76px}
+    .jump .wrap{gap:8px;font-size:12px;letter-spacing:.1em}
   }
   @media (prefers-reduced-motion:no-preference){
     .fade{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -188,11 +207,14 @@
 </head>
 <body>
 
-<!-- NAV (keep in sync with costing.html) -->
-<nav class="nav">
+<!-- JUMP NAV (index.html only) -->
+<nav class="jump" aria-label="Sections">
   <div class="wrap">
-    <a href="index.html" class="on" aria-current="page">Weekend</a>
-    <a href="costing.html">Costing</a>
+    <a href="#fri">Fri</a><span class="sep" aria-hidden="true">·</span>
+    <a href="#sat">Sat</a><span class="sep" aria-hidden="true">·</span>
+    <a href="#sun">Sun</a><span class="sep" aria-hidden="true">·</span>
+    <a href="#dress">Dress</a><span class="sep" aria-hidden="true">·</span>
+    <a href="#ask">Ask</a>
   </div>
 </nav>
 
@@ -213,11 +235,31 @@
   </div>
 </header>
 
+<!-- ASK -->
+<section class="tight wash" id="ask">
+  <div class="wrap">
+    <p class="kicker">Ask</p>
+    <form class="ask-form" id="ask-form" role="search">
+      <label for="ask-input">Ask about the weekend</label>
+      <input class="ask-input" id="ask-input" type="search" placeholder="Ask about the weekend" autocomplete="off" enterkeyhint="search">
+    </form>
+    <div class="chips">
+      <button type="button" class="chip">Saturday's plan</button>
+      <button type="button" class="chip">Where's dinner Friday</button>
+      <button type="button" class="chip">What do I wear tonight</button>
+      <button type="button" class="chip">When's sunset</button>
+      <button type="button" class="chip">How do we get to Pastel</button>
+    </div>
+    <div class="answer" id="ask-answer" aria-live="polite" hidden></div>
+  </div>
+</section>
+
 <!-- FRIDAY -->
-<section class="tight">
+<section class="tight" id="fri">
   <div class="wrap fade">
     <p class="kicker">Friday 25 Sep · Confirmed</p>
     <h2>Rooftop, dinner, then out.</h2>
+    <p class="base">Base: Ibis Bangkok Sukhumvit 24 <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Ibis+Bangkok+Sukhumvit+24" target="_blank" rel="noopener">Map</a></p>
     <p class="note">Travel times are estimates.</p>
     <ul class="plan">
       <li class="go">
@@ -229,7 +271,10 @@
         <div>
           <h3>Drinks · Tichuca rooftop</h3>
           <p class="detail">Sunset 6:13. Smart casual enforced, bring your passport for the ID check.</p>
-          <a class="link" href="https://www.timeout.com/bangkok/bars/tichuca" target="_blank" rel="noopener">Tichuca on Time Out</a>
+          <div class="links">
+            <a class="link" href="https://www.timeout.com/bangkok/bars/tichuca" target="_blank" rel="noopener">Tichuca on Time Out</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Tichuca+Rooftop+Bar+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -241,9 +286,10 @@
         <div>
           <h3>Dinner · Supanniga Eating Room, Thonglor</h3>
           <p class="desc">Polished regional Thai home cooking, Eastern Trat and Isan recipes. Shareable seafood, curries, spicy relishes, slow-cooked pork, crab.</p>
-          <p class="price">S$42-55 pp with food and 1-2 drinks</p>
-          <p class="detail">Deposit THB 500 pp (about S$19), non-refundable, deducted from the final bill.</p>
-          <a class="link" href="https://www.chope.co/bangkok-restaurants/restaurant/supanniga-thonglor" target="_blank" rel="noopener">Supanniga on Chope</a>
+          <div class="links">
+            <a class="link" href="https://www.chope.co/bangkok-restaurants/restaurant/supanniga-thonglor" target="_blank" rel="noopener">Supanniga on Chope</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Supanniga+Eating+Room+Thonglor+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -254,9 +300,11 @@
         <div class="when">9:30-11:30pm</div>
         <div>
           <h3>Drinks · Rabbit Hole</h3>
-          <p class="price">Cocktails S$16-22 each</p>
           <p class="detail">Confirmed for 8.</p>
-          <a class="link" href="https://rabbitholebkk.com/location" target="_blank" rel="noopener">Location and hours</a>
+          <div class="links">
+            <a class="link" href="https://rabbitholebkk.com/location" target="_blank" rel="noopener">Location and hours</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Rabbit+Hole+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -268,7 +316,10 @@
         <div>
           <h3>Sing Sing Theater</h3>
           <p class="detail">Strict smart casual.</p>
-          <a class="link" href="https://singsingtheater.com/" target="_blank" rel="noopener">singsingtheater.com</a>
+          <div class="links">
+            <a class="link" href="https://singsingtheater.com/" target="_blank" rel="noopener">singsingtheater.com</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Sing+Sing+Theater+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -280,7 +331,7 @@
 </section>
 
 <!-- SATURDAY -->
-<section class="wash">
+<section class="wash" id="sat">
   <div class="wrap fade">
     <p class="kicker">Saturday 26 Sep · Confirmed</p>
     <h2>Cooking class, rooftop, Pastel.</h2>
@@ -293,8 +344,10 @@
         <div class="when">1:00-4:00pm</div>
         <div>
           <h3>Tingly Thai cooking class</h3>
-          <p class="detail">Price confirmed at booking.</p>
-          <a class="link" href="https://www.tinglythaicookingschool.com/" target="_blank" rel="noopener">Tingly cooking school</a>
+          <div class="links">
+            <a class="link" href="https://www.tinglythaicookingschool.com/" target="_blank" rel="noopener">Tingly cooking school</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Tingly+Thai+Cooking+School+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -314,7 +367,10 @@
         <div>
           <h3>Drinks · Aether rooftop</h3>
           <p class="detail">44th floor, sunset 6:13.</p>
-          <a class="link" href="https://www.aetherbkk.com/" target="_blank" rel="noopener">aetherbkk.com</a>
+          <div class="links">
+            <a class="link" href="https://www.aetherbkk.com/" target="_blank" rel="noopener">aetherbkk.com</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Aether+Rooftop+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -326,8 +382,6 @@
         <div>
           <h3>Dinner · Pastel</h3>
           <p class="desc">Mediterranean rooftop sharing plates, crudo, seafood, grilled dishes, cocktails. Starts as dinner, shifts into party mode with a DJ.</p>
-          <p class="price">S$60 pp capped · about S$480 for 8</p>
-          <p class="detail">Cap holds at about S$58 pp with a planned shared order and one signature cocktail each, ordered centrally for the table, 10% service and 7% VAT included. Skip the tomahawk, caviar, lobster pasta, premium steaks, lamb chops and Pastel Bites. A second drink round adds about S$19 pp.</p>
           <details class="order">
             <summary>The order for 8</summary>
             <ul>
@@ -343,7 +397,10 @@
               <li>One regular signature cocktail each</li>
             </ul>
           </details>
-          <a class="link" href="https://www.pastelbangkok.com/" target="_blank" rel="noopener">pastelbangkok.com</a>
+          <div class="links">
+            <a class="link" href="https://www.pastelbangkok.com/" target="_blank" rel="noopener">pastelbangkok.com</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Pastel+Rooftop+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -354,7 +411,10 @@
         <div class="when">10:05pm-late</div>
         <div>
           <h3>Havana Social</h3>
-          <a class="link" href="https://havanasocialbkk.com/" target="_blank" rel="noopener">havanasocialbkk.com</a>
+          <div class="links">
+            <a class="link" href="https://havanasocialbkk.com/" target="_blank" rel="noopener">havanasocialbkk.com</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Havana+Social+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -365,7 +425,10 @@
         <div class="when">Late</div>
         <div>
           <h3>Baccarat</h3>
-          <a class="link" href="https://www.timeout.com/bangkok/clubs/baccarat" target="_blank" rel="noopener">Baccarat on Time Out</a>
+          <div class="links">
+            <a class="link" href="https://www.timeout.com/bangkok/clubs/baccarat" target="_blank" rel="noopener">Baccarat on Time Out</a>
+            <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=Baccarat+Bangkok" target="_blank" rel="noopener">Map</a>
+          </div>
         </div>
       </li>
       <li class="go">
@@ -377,7 +440,7 @@
 </section>
 
 <!-- SUNDAY -->
-<section class="tight">
+<section class="tight" id="sun">
   <div class="wrap fade">
     <p class="kicker">Sunday 27 Sep</p>
     <h2>Sunday. Chill day.</h2>
@@ -400,7 +463,7 @@
 </section>
 
 <!-- DRESS -->
-<section class="wash">
+<section class="wash" id="dress">
   <div class="wrap fade">
     <p class="kicker">Dress</p>
     <h2>What to wear.</h2>
@@ -442,6 +505,88 @@
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
   },{threshold:.12});
   document.querySelectorAll(".fade").forEach(el=>io.observe(el));
+
+  // ----- ask bar -----
+  // QA is the answer source for the ask bar. Keep it in sync with the schedule above:
+  // any time, venue or dress change must be made in the matching answer too.
+  // Scoring: each keyword found in the lowercased question adds its length, so specific
+  // keywords beat short ones. Ties go to the earlier entry, which is why dress comes first.
+  const QA = [
+    {keywords:["wear tonight","tonight","wear","dress","outfit"],
+     answer:"Friday night: smart casual, one outfit all night, Sing Sing is strict. Saturday night: smart casual, can go a notch up. No shorts or flip-flops either night."},
+    {keywords:["friday","fri ","wear","dress","outfit","clothes","smart casual","shoes"],
+     answer:"Friday: one outfit all night, smart casual. Sing Sing is strict: collared shirt or smart tee, chinos or smart trousers, proper shoes. No shorts, flip-flops or sportswear."},
+    {keywords:["saturday day","daytime","afternoon","cooking","class","wear","dress","outfit","clothes","shoes"],
+     answer:"Saturday daytime: comfy, light clothes you don't mind getting splashed at the cooking class. Closed shoes are safer in the kitchen."},
+    {keywords:["saturday night","sat night","saturday","sat ","wear","dress","outfit","clothes","aether","pastel","havana","baccarat"],
+     answer:"Saturday night: smart casual, can go a notch up for Aether and Pastel. Same outfit for Havana and Baccarat. No shorts or flip-flops."},
+    {keywords:["sunday","sun ","wear","dress","outfit","clothes","temple","temples","shoulders","knees","cover","grand palace","wat pho"],
+     answer:"Sunday: casual. For the Grand Palace and Wat Pho, covered shoulders and knees are required."},
+    {keywords:["passport"," id ","id check","identification","bring"],
+     answer:"Bring your passport on Friday, Tichuca checks ID at the door."},
+    {keywords:["friday","fri ","on friday","what s on","plan","schedule","itinerary","programme","program","happening"],
+     answer:"Friday: leave the hotel 5:00pm, Tichuca rooftop 5:15, dinner at Supanniga 7:30, Rabbit Hole 9:30, Sing Sing from 11:45 until late."},
+    {keywords:["saturday","sat ","on saturday","what s on","plan","schedule","itinerary","programme","program","happening"],
+     answer:"Saturday: leave 12:15pm, Tingly cooking class 1-4pm, back to shower and change, Aether 5:45, dinner at Pastel 7:45, Havana Social 10:05, then Baccarat."},
+    {keywords:["sunday","sun ","on sunday","what s on","plan","schedule","itinerary","programme","program","happening","free","chill"],
+     answer:"Sunday is a chill day with no group plan. Shopping, a massage at Makkha Spa or the temples, your call."},
+    {keywords:["dinner","friday","fri ","supanniga","eat","food","restaurant"],
+     answer:"Friday dinner is Supanniga Eating Room, Thonglor, 7:30-9:15pm. Regional Thai, shared plates."},
+    {keywords:["dinner","saturday","sat ","pastel","eat","food","restaurant","order"],
+     answer:"Saturday dinner is Pastel, 7:45-10:00pm. Mediterranean rooftop, one shared order for the table, DJ later."},
+    {keywords:["drinks","drink","bar","bars","friday","fri ","tichuca","rabbit hole","sing sing","club","party","late"],
+     answer:"Friday: Tichuca rooftop 5:15-7:10pm, Rabbit Hole 9:30-11:30pm, Sing Sing Theater from 11:45pm until late."},
+    {keywords:["drinks","drink","bar","bars","saturday","sat ","aether","havana","baccarat","after pastel","after dinner","club","party","late"],
+     answer:"Saturday: Aether rooftop 5:45-7:10pm, Havana Social after Pastel from 10:05pm, then Baccarat late."},
+    {keywords:["cooking","class","tingly","cook","when","start","time"],
+     answer:"Tingly Thai cooking class, Saturday 1:00-4:00pm. Leave the hotel at 12:15pm, about 35 min by Grab."},
+    {keywords:["sunset","sun set","golden hour","sundown"],
+     answer:"Sunset is 6:13pm both days. Friday you'll be at Tichuca, Saturday at Aether, 44th floor."},
+    {keywords:["hotel","base","ibis","staying","stay","address","sukhumvit 24","where are we"],
+     answer:"Base is Ibis Bangkok Sukhumvit 24. There's a Map link at the top of the Friday schedule."},
+    {keywords:["get to pastel","to pastel","pastel","how do we get","how to get","bts","grab","travel","transport"],
+     answer:"From Aether at 7:10pm: Grab, about 25 min, or BTS, about 20 min. Dinner starts 7:45."},
+    {keywords:["leave","leaving","meet","what time","start","friday","fri "],
+     answer:"Friday: leave the hotel at 5:00pm for Tichuca, about 15 min by Grab."},
+    {keywords:["leave","leaving","meet","what time","start","saturday","sat "],
+     answer:"Saturday: leave the hotel at 12:15pm for Tingly, about 35 min by Grab. Then again at 5:15pm for Aether."},
+    {keywords:["massage","spa","makkha","relax"],
+     answer:"Makkha Spa, Sukhumvit 33. Plan 2-3 hours, Sunday is the day for it."},
+    {keywords:["shopping","shop","mall","market","chatuchak","iconsiam","emsphere","emquartier","buy"],
+     answer:"Sunday options: Chatuchak Weekend Market, IconSiam, Emsphere, EmQuartier."},
+    {keywords:["sightseeing","sights","see","temple","temples","grand palace","wat pho","wat arun","which"],
+     answer:"Grand Palace, Wat Pho and Wat Arun, on Sunday if you want them. Covered shoulders and knees at the Grand Palace and Wat Pho."},
+    {keywords:["fly","flying","flight","flights","back","home","airport","monday","return","mathew","dayvin","cecilia","wilson"],
+     answer:"Mathew and Dayvin fly back Sunday 9:15pm on SQ. Cecilia and Wilson stay until Monday."}
+  ];
+  const FALLBACK = "Not sure, check the schedule below or ask in the group.";
+
+  function answerFor(question){
+    const q = " " + question.toLowerCase().replace(/[^a-z0-9:]+/g," ").trim() + " ";
+    let best = null, top = 0;
+    QA.forEach(e=>{
+      const score = e.keywords.reduce((n,k)=> q.includes(k) ? n + k.trim().length : n, 0);
+      if(score > top){ top = score; best = e; }
+    });
+    return best ? best.answer : FALLBACK;
+  }
+
+  const askForm = document.getElementById("ask-form");
+  const askInput = document.getElementById("ask-input");
+  const askAnswer = document.getElementById("ask-answer");
+  function ask(question){
+    question = question.trim();
+    if(!question){ askAnswer.hidden = true; return; }
+    askAnswer.innerHTML = "";
+    const q = document.createElement("p"); q.className = "q"; q.textContent = question;
+    const a = document.createElement("p"); a.textContent = answerFor(question);
+    askAnswer.append(q, a);
+    askAnswer.hidden = false;
+  }
+  askForm.addEventListener("submit", e=>{ e.preventDefault(); ask(askInput.value); });
+  document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click", ()=>{
+    askInput.value = c.textContent; ask(c.textContent);
+  }));
 </script>
 </body>
 </html>
