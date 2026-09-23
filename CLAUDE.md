@@ -8,7 +8,7 @@ Eight people on the trip. Three fly: Tisha, Angru and Jordi. Kenny, Mathew, Ceci
 
 Two pages, each a standalone file with inline CSS, HTML and JS. No build step, no package manager, no dependencies beyond Google Fonts and an Unsplash hero image.
 
-- `index.html` is the weekend plan: Friday (confirmed), Saturday (six activity options, then dinner), Sunday (free). It currently holds options 1-6 awaiting Kenny's pick. Once he picks, replace the six option cards with the final schedule, in the same `.plan` list style Friday and Saturday dinner use.
+- `index.html` is the final shared itinerary for all eight: timed Friday and Saturday schedules, Sunday chill day, and what to wear. No options or decisions left on it.
 - `costing.html` is the cost record: what was actually booked for the three who fly, plus per-person estimates for the weekend social spend. It is static, there is no configurator and no JS beyond the shared scroll reveal.
 - `og.jpg` is shared by both: a 1200x630 crop of the hero image, used as the social preview for link unfurls (Slack, WhatsApp, Teams).
 
@@ -22,7 +22,7 @@ Each page carries its own copy of the same nav: a `.nav` block above the hero wi
 
 Each page has its own `<title>`, description and og tags. Keep `og:title` and `og:description` in sync with `<title>` and `<meta name="description">` on each page.
 
-- `index.html`: "Heitreat 01 · The weekend", `og:url` the site root.
+- `index.html`: "Heitreat 01 · The weekend", `og:url` the site root. The description summarises the final plan (Friday rooftop, dinner and bars, Saturday cooking class, Pastel and a night out, Sunday chill day), so update it if the plan changes.
 - `costing.html`: "Heitreat 01 · Costing", `og:url` ending in `/costing.html`. Its description covers booked flights and rooms plus weekend spend estimates.
 
 `og:image` is an absolute URL (`https://jordialbanell.github.io/bkk-retreat/og.jpg`) on both, which is required, relative paths do not resolve for link previews. If the hero image or the site URL ever changes, regenerate `og.jpg` and update the absolute URL in both files.
@@ -32,29 +32,38 @@ Each page has its own `<title>`, description and og tags. Keep `og:title` and `o
 The page used to be a decision tool with an interactive configurator, a `FLIGHTS`/`ROOMS` data model, flight and hotel option tables and Option A/B scenario cards. Bookings are made, so all of that is gone. There are no ranges to recompute and no duplicated price source to keep in sync. What is left is two static tables:
 
 - **Core cost**, booked and confirmed: Scoot return S$316 pp, Ibis Sukhumvit 24 S$303 per room for 3 nights Thu-Sun on flexible terms, core total S$619 pp and S$1,857 for three. The three columns are item, per person, for three. The per-person and for-three figures are written out, so if one moves, update the row and the `tr.total` line together.
-- **Weekend spend**, estimates for all eight: Friday dinner, Friday drinks, Saturday activity, Saturday dinner, Sunday. The total row is the sum of the lows and the sum of the highs, currently S$139-214 pp. Recompute it whenever a row changes, and remember the Saturday activity range (S$21-77) is the cheapest and priciest option on the Weekend page, so it moves when those options move.
+- **Weekend spend**, estimates for all eight: Supanniga, Pastel, the Tingly cooking class (price at booking), Fri and Sat bar rounds (pay as you go), Sunday (own spend). The total row is labelled "Both dinners" and covers only the two priced rows, Supanniga S$42-55 plus Pastel S$60, so S$102-115 pp. The note under the table says the rest comes on top. When Tingly's price is known, add it to the total and relabel the row to say what it includes.
 
 Flights are per person, the hotel is per room but there is one room each, so both sit in the per-person column. The row says "one room each" so the column heading stays honest.
 
-`tr.total` is the heavier summary row, and `td.num`/`th.num` carry `padding-left` so two numeric columns cannot collide on a phone. The `.note-sm` paragraph under each table carries the caveats, and `.note-sm a` is the only inline prose link style on either page.
+`tr.total` is the heavier summary row, and `td.num`/`th.num` carry `padding-left` so two numeric columns cannot collide on a phone. The `.note-sm` paragraph under each table carries the caveats. The total row's figure is `white-space:nowrap` so a range like S$102-115 does not break at the hyphen on a phone.
 
-## index.html: activity totals are hardcoded
+## index.html: the itinerary
 
-Each option card states a price per person and a total for eight. The totals are written out, not computed. If a per-person price changes, recompute `pp x 8` by hand and update both numbers on the card. The rainy-season note under the cards names option numbers, not venues, so it has to be rechecked whenever an option changes indoor/outdoor.
+Sections in order: Friday, Saturday, Sunday, Dress. Friday and Saturday are timed schedules in `.plan`, time on the left, content on the right. "Travel times are estimates." sits once under the Friday heading.
 
-Option 2 is the exception to one card, one price: it holds two cooking schools as `.variant` blocks inside a single card, Bangkok Thai Cooking Academy (S$50 pp, S$400 for 8) and Pink Chili (S$46 pp, S$368 for 8), each with its own timing, tag, link and hardcoded `pp x 8` total. It stays numbered 2 so Kenny can still answer with a number. The THB figures are the quoted source prices; the SGD ones are converted, so move both together. If one school confirms, collapse the card back to a single option in the shape of cards 1 and 3-6.
+Two row types inside a schedule:
+
+- Venue entries are a plain `.plan > li`: `h3` (e.g. "Drinks · Aether rooftop"), optional `.desc`, `.price`, `.detail` note, then a `.link`.
+- Transit legs and other one-line rows are `li.go` with a `p.go-text` ("Hotel to Tichuca · Grab, about 15 min"). They are compact and grey so the venues stand out. Shower and change on Saturday uses the same row.
+
+Times use the `7:30-9:15pm` form, open-ended ones `11:45pm-late`, and after-midnight rows just say "Late". If a slot moves, check the transit rows either side still add up.
+
+Sunday reuses `li.go` inside `ul.plan.groups`, where the left column is a category (Shopping, Massage, Sightseeing) in blue and the text is dark, not grey. The flights-back line is the lede above it. Dress is a normal `.plan` with the day in the left column and a `.desc`, closed by a `.note` saying only Tichuca and Sing Sing have confirmed codes. If a venue changes, recheck the dress copy, it names venues.
+
+The Tingly cooking class shows "Price confirmed at booking". When the price is known, update the entry and the costing.html weekend table together.
 
 ## index.html: Saturday dinner
 
-Saturday dinner is Pastel, a Mediterranean rooftop that turns into a DJ party later. It sits in a `.plan` entry below the options, in the `.evening` block. Budget is confirmed at S$60 pp capped, about S$480 for 8, which assumes the planned shared order and one signature cocktail each ordered centrally, with 10% service and 7% VAT included. The time is still "From evening / time TBC", so replace that when the booking is made.
+Pastel is the 7:45-10:00pm entry in the Saturday schedule, a Mediterranean rooftop that turns into a DJ party later. Budget is confirmed at S$60 pp capped, about S$480 for 8, which assumes the planned shared order and one signature cocktail each ordered centrally, with 10% service and 7% VAT included.
 
-The planned order is a list inside a `<details class="order">`, collapsed by default so the entry stays short on a phone. If a dish moves, the S$58 pp working figure in the detail line moves with it, and the S$60 cap has to be rechecked.
+The planned order is a list inside a `<details class="order">` within the Pastel entry, collapsed by default so the entry stays short on a phone. If a dish moves, the S$58 pp working figure in the detail line moves with it, and the S$60 cap has to be rechecked.
 
 ## index.html: the disclosure pattern
 
 `<details class="order">` is the only `<details>` in the project. The default triangle is removed twice over, `list-style:none` on the summary for modern browsers and `::-webkit-details-marker{display:none}` for Safari, and replaced with a typographic `+` that becomes `-` when open, so the control stays inside the palette instead of adding a marker glyph. The summary carries `padding:8px 0` purely to give a 35px tap target on a phone. Reuse this pattern rather than inventing a second disclosure style.
 
-Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedule row rules are scoped `.plan > li` for exactly this reason. An unscoped `.plan li` also matches list items nested inside an entry and forces them into the 130px time column.
+Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedule row rules, including `li.go`, are scoped `.plan > li` for exactly this reason. An unscoped `.plan li` also matches the order list nested inside the Pastel entry and forces its items into the 140px time column. The column is 140px so the longest time, `7:45-10:00pm`, fits on one line at desktop size.
 
 ## Writing style
 
@@ -76,8 +85,7 @@ Watch out when adding anything with an `<li>` inside a `.plan` entry: the schedu
 Must stay usable at 480px and below. Test any layout change against the mobile breakpoints at the bottom of each file's CSS: `@media (max-width:820px)` and `@media (max-width:480px)`.
 
 - costing.html: the 480px query only drops the table and caption font sizes. The tables are plain and reflow on their own, but `td.num` needs its `padding-left` or two numeric columns run into each other on the total row at phone width.
-- index.html: there is one `min-width` query, `@media (min-width:672px)`, which is the width at which the `.options` grid reaches 2 columns. From there option 2 (`.opt.wide`) spans a full grid row and sets its two schools side by side, so the double-height card stays close to its neighbours. Below it, the card is a normal single column with the two schools stacked. If the `305px` grid floor below ever changes, recompute this `672px` (`2 x floor + 14px gap + 48px padding`) to match.
-- index.html: the `.options` grid is otherwise not breakpoint-driven. It uses `repeat(auto-fit,minmax(min(305px,100%),1fr))`, which yields 3 columns on desktop, 2 in the tablet band and 1 on phones. The 305px floor exists because the longest link label (`sompongthaicookingschool.com`) renders 257px wide and does not scale with the viewport. If you add a longer label, either shorten it or raise that floor. `.link` carries `max-width:100%` so a long label wraps inside its card instead of overflowing it, which `overflow-wrap` alone cannot do on an inline-block.
+- index.html: at 480px `.plan > li` collapses to one column, time above content, and `li.go` rows tighten further. Long link labels wrap inside the entry because `.link` carries `max-width:100%`, which `overflow-wrap` alone cannot do on an inline-block. Keep link labels short (e.g. "Tingly cooking school" rather than the full domain).
 
 ## Deploy
 
